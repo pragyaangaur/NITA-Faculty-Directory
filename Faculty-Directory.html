@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NITA Faculty Directory</title>
+
+<style>
+body{
+    font-family: system-ui, -apple-system, Arial;
+    margin:0;
+    background:#0b1220;
+    color:#e5e7eb;
+}
+
+header{
+    padding:30px 20px 10px;
+    max-width:1100px;
+    margin:auto;
+}
+
+h1{
+    margin:0;
+    font-size:28px;
+}
+
+.sub{
+    color:#94a3b8;
+    margin-top:6px;
+    font-size:14px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:20px;
+}
+
+.controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin:20px 0;
+}
+
+input,select{
+    padding:12px 14px;
+    border-radius:10px;
+    border:1px solid #334155;
+    background:#0f172a;
+    color:#e5e7eb;
+    outline:none;
+}
+
+input{
+    flex:1;
+    min-width:220px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(260px,1fr));
+    gap:14px;
+}
+
+.card{
+    background:#0f172a;
+    border:1px solid #1f2937;
+    border-radius:14px;
+    padding:14px;
+    transition:0.2s;
+}
+
+.card:hover{
+    transform:translateY(-2px);
+    border-color:#334155;
+}
+
+.name{
+    font-weight:600;
+    font-size:16px;
+}
+
+.title{
+    color:#93c5fd;
+    font-size:13px;
+    margin-top:4px;
+}
+
+.dept{
+    color:#94a3b8;
+    font-size:13px;
+    margin-top:6px;
+}
+
+.email{
+    margin-top:10px;
+    font-size:13px;
+    color:#60a5fa;
+    word-break:break-all;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>NIT Agartala Faculty Directory</h1>
+    <div class="sub">Search professors by name or department</div>
+</header>
+
+<div class="container">
+
+<div class="controls">
+    <input id="searchBox" placeholder="Search faculty...">
+    <select id="deptFilter">
+        <option value="">All Departments</option>
+    </select>
+</div>
+
+<div class="grid" id="grid"></div>
+
+</div>
+
+<script>
+
+const facultyData = [
+  {
+    "Name":"Dr. Tarun Kanti Bandyopadhyay",
+    "Title":"HOD & Associate Professor",
+    "Department":"Bio Engineering",
+    "Email":"tarunkantibanerjee0@gmail.com"
+  },
+  {
+    "Name":"Dr. Abhijit Chatterjee",
+    "Title":"Assistant Professor",
+    "Department":"Bio Engineering",
+    "Email":"abhijitchatterjee1729@gmail.com"
+  },
+  {
+    "Name":"Dr. Biswanath Bhunia",
+    "Title":"Assistant Professor",
+    "Department":"Bio Engineering",
+    "Email":"bbhunia@gmail.com"
+  },
+  {
+    "Name":"Dr. Deeplina Das",
+    "Title":"Assistant Professor",
+    "Department":"Bio Engineering",
+    "Email":"dasdeeplina@gmail.com"
+  },
+  {
+    "Name":"Dr. Muthusivaramapandian M",
+    "Title":"Assistant Professor",
+    "Department":"Bio Engineering",
+    "Email":"msrpmsiva.be@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. N. Vignesh",
+    "Title":"Assistant Professor",
+    "Department":"Bio Engineering",
+    "Email":"nvignesh.be@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Padmanaban V C",
+    "Title":"Assistant Professor",
+    "Department":"Bio Engineering",
+    "Email":"padmanaban@nita.ac.in"
+  },
+  {
+    "Name":"Mrs. HRIJUTA DATTA",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Bio Engineering",
+    "Email":"hrijuta.ri8z@gmail.com"
+  },
+  {
+    "Name":"Dr. Tridib Kumar Bhowmick",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Bio Engineering",
+    "Email":"tbhowmick@gmail.com"
+  },
+  {
+    "Name":"Dr. Soma Nag",
+    "Title":"HOD & Associate Professor",
+    "Department":"Chemical Engineering",
+    "Email":"somanag.nita@gmail.com"
+  },
+  {
+    "Name":"Dr. Ajay Kumar Manna",
+    "Title":"Associate Professor",
+    "Department":"Chemical Engineering",
+    "Email":"akmchem@yahoo.co.in"
+  },
+  {
+    "Name":"Dr. Kalyan Gayen",
+    "Title":"Associate Professor",
+    "Department":"Chemical Engineering",
+    "Email":"kgayen123@gmail.com"
+  },
+  {
+    "Name":"Dr. SRIMANTA RAY",
+    "Title":"Associate Professor",
+    "Department":"Chemical Engineering",
+    "Email":"srimanta.chemical@nita.ac.in"
+  },
+  {
+    "Name":"Dr. Tarun Kanti Bandyopadhyay",
+    "Title":"Associate Professor",
+    "Department":"Chemical Engineering",
+    "Email":"tarunkantibanerjee0@gmail.com"
+  },
+  {
+    "Name":"Dr. Bibhab Kumar Lodh",
+    "Title":"Assistant Professor",
+    "Department":"Chemical Engineering",
+    "Email":"bibhab.chemical.nita@gmail.com"
+  },
+  {
+    "Name":"Dr. Mamidi Suresh",
+    "Title":"Assistant Professor",
+    "Department":"Chemical Engineering",
+    "Email":"mamidi.che@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Mriganka Sekhar Manna",
+    "Title":"Assistant Professor",
+    "Department":"Chemical Engineering",
+    "Email":"mrigankamanna602@gmail.com"
+  },
+  {
+    "Name":"Dr. Ravi Prakash",
+    "Title":"Assistant Professor",
+    "Department":"Chemical Engineering",
+    "Email":"rprakash.che@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Vikash Singh",
+    "Title":"Assistant Professor",
+    "Department":"Chemical Engineering",
+    "Email":"vikash.che@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Swarup Biswas",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Chemical Engineering",
+    "Email":"swarup.biswas85@gmail.com"
+  },
+  {
+    "Name":"Dr. Deb Dulal Tripura",
+    "Title":"Professor & HOD",
+    "Department":"Civil Engineering",
+    "Email":"debdulaltripura@gmail.com"
+  },
+  {
+    "Name":"Prof. Manish Pal",
+    "Title":"Professor",
+    "Department":"Civil Engineering",
+    "Email":"mani_nita@yahoo.co.in"
+  },
+  {
+    "Name":"Dr. PARTHA PRATIM SARKAR",
+    "Title":"Professor",
+    "Department":"Civil Engineering",
+    "Email":"ps_partha@yahoo.com"
+  },
+  {
+    "Name":"Dr. Rajib Saha",
+    "Title":"Professor",
+    "Department":"Civil Engineering",
+    "Email":"rajib.iitbbsr@gmail.com"
+  },
+  {
+    "Name":"Prof. RATUL DAS",
+    "Title":"Professor",
+    "Department":"Civil Engineering",
+    "Email":"ratulnitagartala@gmail.com"
+  },
+  {
+    "Name":"Prof. RICHI PRASAD SHARMA",
+    "Title":"Professor",
+    "Department":"Civil Engineering",
+    "Email":"rps.civil@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Sima Ghosh",
+    "Title":"Professor",
+    "Department":"Civil Engineering",
+    "Email":"simacvl@gmail.com"
+  },
+  {
+    "Name":"Prof. SUJIT KUMAR PAL",
+    "Title":"Professor",
+    "Department":"Civil Engineering",
+    "Email":"skpal1963@gmail.com"
+  },
+  {
+    "Name":"Prof. UMESH MISHRA",
+    "Title":"Professor",
+    "Department":"Civil Engineering",
+    "Email":"umeshmishra2010@gmail.com"
+  },
+  {
+    "Name":"Dr. Animesh Debnath",
+    "Title":"Associate Professor",
+    "Department":"Civil Engineering",
+    "Email":"debnathanimesh@gmail.com"
+  },
+  {
+    "Name":"Dr. Joyanta Pal",
+    "Title":"Associate Professor",
+    "Department":"Civil Engineering",
+    "Email":"joyanta.ce@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Mrinmoy Majumder",
+    "Title":"Associate Professor",
+    "Department":"Civil Engineering",
+    "Email":"mmajumder15@gmail.com"
+  },
+  {
+    "Name":"Dr. RAMA DEBBARMA",
+    "Title":"Associate Professor",
+    "Department":"Civil Engineering",
+    "Email":"ramadebbarma@gmail.com"
+  },
+  {
+    "Name":"Dr. Sushant Kumar Biswal",
+    "Title":"Associate Professor",
+    "Department":"Civil Engineering",
+    "Email":"sushantb69@gmail.com"
+  },
+  {
+    "Name":"Dr. Dhirendra Kumar Pandey",
+    "Title":"Assistant Professor",
+    "Department":"Civil Engineering",
+    "Email":"dkp.nita@gmail.com"
+  },
+  {
+    "Name":"Dr. Dipankar Sarkar",
+    "Title":"Assistant Professor",
+    "Department":"Civil Engineering",
+    "Email":"dipankarnita@gmail.com"
+  },
+  {
+    "Name":"Dr. Gopinandan Dey",
+    "Title":"Assistant Professor",
+    "Department":"Civil Engineering",
+    "Email":"gopinita@ymail.com"
+  },
+  {
+    "Name":"Dr. Lipika Halder",
+    "Title":"Assistant Professor",
+    "Department":"Civil Engineering",
+    "Email":"erlhalder@yahoo.co.in"
+  },
+  {
+    "Name":"Dr. Litan Dey",
+    "Title":"Assistant Professor",
+    "Department":"Civil Engineering",
+    "Email":"litan.ce@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Manu S Nadesan",
+    "Title":"Assistant Professor",
+    "Department":"Civil Engineering",
+    "Email":"msn10@iitbbs.ac.in"
+  },
+  {
+    "Name":"Dr. Nilotpal Debbarma",
+    "Title":"Assistant Professor",
+    "Department":"Civil Engineering",
+    "Email":"dbnilotpal@gmail.com"
+  },
+  {
+    "Name":"Dr. Sagarika Panigrahi",
+    "Title":"Assistant Professor",
+    "Department":"Civil Engineering",
+    "Email":"sagarika.ce@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. SANJAY PAUL",
+    "Title":"Assistant Professor",
+    "Department":"Civil Engineering",
+    "Email":"sanjay.ce@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Saurav Kumar",
+    "Title":"Assistant Professor",
+    "Department":"Civil Engineering",
+    "Email":"saurav.ce@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Surajit Das",
+    "Title":"Assistant Professor",
+    "Department":"Civil Engineering",
+    "Email":"surajit2006r@gmail.com"
+  },
+  {
+    "Name":"Dr. Tara Sen",
+    "Title":"Assistant Professor",
+    "Department":"Civil Engineering",
+    "Email":"tarasen20@gmail.com"
+  },
+  {
+    "Name":"Dr. Debashish Karmakar",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Civil Engineering",
+    "Email":"dkarmakarnita@gmail.com"
+  },
+  {
+    "Name":"Mrs. DIPIKA DEBNATH",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Civil Engineering",
+    "Email":"rituu2011@gmail.com"
+  },
+  {
+    "Name":"Mrs. Nabanita Bhowmik",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Civil Engineering",
+    "Email":"bhowmik.naba@yahoo.in"
+  },
+  {
+    "Name":"Mrs. Nabina Khanam",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Civil Engineering",
+    "Email":"nabinanits@gmail.com"
+  },
+  {
+    "Name":"Mr. RATNADEEP MODAK",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Civil Engineering",
+    "Email":"ratnadeepmodak@yahoo.in"
+  },
+  {
+    "Name":"Mr. Subhajit Deb",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Civil Engineering",
+    "Email":"d_subhajitdeb@yahoo.co.in"
+  },
+  {
+    "Name":"Dr. Tilottama Chakraborty",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Civil Engineering",
+    "Email":"tilottama.ce@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Prof. Mrinal Kanti Deb Barma",
+    "Title":"Professor & HOD",
+    "Department":"Computer Science and Engineering",
+    "Email":"mrinal.cse@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Ashim Saha",
+    "Title":"Associate Professor",
+    "Department":"Computer Science and Engineering",
+    "Email":"ashim.cse@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Diptendu Bhattacharya",
+    "Title":"Associate Professor",
+    "Department":"Computer Science and Engineering",
+    "Email":"diptendu.nita@gmail.com"
+  },
+  {
+    "Name":"Dr. SWAPAN DEBBARMA",
+    "Title":"Associate Professor",
+    "Department":"Computer Science and Engineering",
+    "Email":"swapanxavier@gmail.com"
+  },
+  {
+    "Name":"Dr. Abhishek Hazra",
+    "Title":"Assistant Professor",
+    "Department":"Computer Science and Engineering",
+    "Email":"ah.cse@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Anupam Jamatia",
+    "Title":"Assistant Professor",
+    "Department":"Computer Science and Engineering",
+    "Email":"anupamjamatia@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Awnish Kumar",
+    "Title":"Assistant Professor",
+    "Department":"Computer Science and Engineering",
+    "Email":"awnish.cse@nita.ac.in"
+  },
+  {
+    "Name":"Dr. Dwijen Rudrapal",
+    "Title":"Assistant Professor",
+    "Department":"Computer Science and Engineering",
+    "Email":"dwijen.rudrapal@gmail.com"
+  },
+  {
+    "Name":"Dr. Jayakumar L",
+    "Title":"Assistant Professor",
+    "Department":"Computer Science and Engineering",
+    "Email":"jayakumar.cse@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Kamal Das",
+    "Title":"Assistant Professor",
+    "Department":"Computer Science and Engineering",
+    "Email":"kamaldas.cse@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Kamanasish Bhattacharjee",
+    "Title":"Assistant Professor",
+    "Department":"Computer Science and Engineering",
+    "Email":"kamanasishb.cse@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Kunal Chakma",
+    "Title":"Assistant Professor",
+    "Department":"Computer Science and Engineering",
+    "Email":"kchakma.cse@nita.ac.in"
+  },
+  {
+    "Name":"Dr. Nikhil Debbarma",
+    "Title":"Assistant Professor",
+    "Department":"Computer Science and Engineering",
+    "Email":"nikhildb@rediffmail.com"
+  },
+  {
+    "Name":"Dr. Nirmalya Kar",
+    "Title":"Assistant Professor",
+    "Department":"Computer Science and Engineering",
+    "Email":"nirmalya@ieee.org"
+  },
+  {
+    "Name":"Dr. Rajesh Basak",
+    "Title":"Assistant Professor",
+    "Department":"Computer Science and Engineering",
+    "Email":"rajesh.cse@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Ranjita Das",
+    "Title":"Assistant Professor",
+    "Department":"Computer Science and Engineering",
+    "Email":"ranjita.nitm@gmail.com"
+  },
+  {
+    "Name":"Dr. Smita Das",
+    "Title":"Assistant Professor",
+    "Department":"Computer Science and Engineering",
+    "Email":"smitadas.nita@gmail.com"
+  },
+  {
+    "Name":"Dr. Suman Deb",
+    "Title":"Assistant Professor",
+    "Department":"Computer Science and Engineering",
+    "Email":"sumandeb.cse@nita.ac.in"
+  },
+  {
+    "Name":"Dr. Suyel Namasudra",
+    "Title":"Assistant Professor",
+    "Department":"Computer Science and Engineering",
+    "Email":"suyel.cse@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Mr. Tribid Debbarma",
+    "Title":"Assistant Professor",
+    "Department":"Computer Science and Engineering",
+    "Email":"tribid.cse@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Dhrubajyoti Bhowmik",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Computer Science and Engineering",
+    "Email":"babanbhowmik@gmail.com"
+  },
+  {
+    "Name":"Dr. Kishore Kumar Dhar",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Computer Science and Engineering",
+    "Email":"kkdhar82@gmail.com"
+  },
+  {
+    "Name":"Dr. Moumita Majumder",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Computer Science and Engineering",
+    "Email":"moumita2003@rediffmail.com"
+  },
+  {
+    "Name":"Dr. Prashant Bhardwaj",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Computer Science and Engineering",
+    "Email":"prashant.cse@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Tannistha Pal",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Computer Science and Engineering",
+    "Email":"tannisthapaul@gmail.com"
+  },
+  {
+    "Name":"Dr. Munesh Chandra",
+    "Title":"Associate Professor (In Lien)",
+    "Department":"Computer Science and Engineering",
+    "Email":"drmunesh.nita@gmail.com"
+  },
+  {
+    "Name":"Dr. Sumita Deb",
+    "Title":"HOD & Associate Professor",
+    "Department":"Electrical Engineering",
+    "Email":"sumita_nita@rediffmail.com"
+  },
+  {
+    "Name":"Prof. Ardhendu Saha",
+    "Title":"Professor",
+    "Department":"Electrical Engineering",
+    "Email":"arsagtwave@gmail.com"
+  },
+  {
+    "Name":"Dr. Arvind Kumar Jain",
+    "Title":"Professor",
+    "Department":"Electrical Engineering",
+    "Email":"arvindjmp@gmail.com"
+  },
+  {
+    "Name":"Prof. Priyanath Das",
+    "Title":"Professor",
+    "Department":"Electrical Engineering",
+    "Email":"priyanathdas@yahoo.co.in"
+  },
+  {
+    "Name":"Dr. Rup Narayan Ray",
+    "Title":"Associate Professor",
+    "Department":"Electrical Engineering",
+    "Email":"rupnarayan_r@yahoo.co.in"
+  },
+  {
+    "Name":"Dr. Subhadeep Bhattacharjee",
+    "Title":"Associate Professor",
+    "Department":"Electrical Engineering",
+    "Email":"subhadeep_bhattacharjee@yahoo.co.in"
+  },
+  {
+    "Name":"Dr. Abanishwar Chakrabarti",
+    "Title":"Assistant Professor",
+    "Department":"Electrical Engineering",
+    "Email":"abanishwar@yahoo.com"
+  },
+  {
+    "Name":"Dr. Anindita Jamatia",
+    "Title":"Assistant Professor",
+    "Department":"Electrical Engineering",
+    "Email":"anindita.jamatia@gmail.com"
+  },
+  {
+    "Name":"Dr. Bikram Das",
+    "Title":"Assistant Professor",
+    "Department":"Electrical Engineering",
+    "Email":"bikram.ee@nita.ac.in"
+  },
+  {
+    "Name":"Dr. JOYASHREE DAS",
+    "Title":"Assistant Professor",
+    "Department":"Electrical Engineering",
+    "Email":"joyashree_007@rediffmail.com"
+  },
+  {
+    "Name":"Dr. Karuna Kiran",
+    "Title":"Assistant Professor",
+    "Department":"Electrical Engineering",
+    "Email":"karuna.ee@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Minakshi Deb Barma",
+    "Title":"Assistant Professor",
+    "Department":"Electrical Engineering",
+    "Email":"minakshi_nita@rediffmail.com"
+  },
+  {
+    "Name":"Dr. Nabamita Goswami",
+    "Title":"Assistant Professor",
+    "Department":"Electrical Engineering",
+    "Email":"nabamita.ee@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. P. Padmagirisan",
+    "Title":"Assistant Professor",
+    "Department":"Electrical Engineering",
+    "Email":"padmagirisan.ee@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Prabir Ranjan Kasari",
+    "Title":"Assistant Professor",
+    "Department":"Electrical Engineering",
+    "Email":"prkasari_s@yahoo.co.in"
+  },
+  {
+    "Name":"Mr. Prasenjit Debnath",
+    "Title":"Assistant Professor",
+    "Department":"Electrical Engineering",
+    "Email":"prasenjit1001@yahoo.com"
+  },
+  {
+    "Name":"Dr. Sadhan Gope",
+    "Title":"Assistant Professor",
+    "Department":"Electrical Engineering",
+    "Email":"sadhan.ee@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Shailendra Singh",
+    "Title":"Assistant Professor",
+    "Department":"Electrical Engineering",
+    "Email":"shailendra.ee@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Arup Ratan Bhowmik",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Electrical Engineering",
+    "Email":"arup.ee_nita@yahoo.com"
+  },
+  {
+    "Name":"Dr. Diptanu Das",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Electrical Engineering",
+    "Email":"diptanuonline@yahoo.co.in"
+  },
+  {
+    "Name":"Mr. DIPTANU DEY",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Electrical Engineering",
+    "Email":"ddiptanu.career@gmail.com"
+  },
+  {
+    "Name":"Dr. Nivedita Laskar",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Electrical Engineering",
+    "Email":"niveditalaskar00@yahoo.co.in"
+  },
+  {
+    "Name":"Dr. SHARMISTHA SHARMA",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Electrical Engineering",
+    "Email":"sharmistha.sharma34@yahoo.com"
+  },
+  {
+    "Name":"Dr. Tamasi Moyra Panua",
+    "Title":"HOD & Associate Professor",
+    "Department":"Electronics and Communication Engineering",
+    "Email":"tamasi.ece@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Dibyendu Ghoshal",
+    "Title":"Professor",
+    "Department":"Electronics and Communication Engineering",
+    "Email":"tukumw@gmail.com"
+  },
+  {
+    "Name":"Dr. Sambhu Nath Pradhan",
+    "Title":"Professor",
+    "Department":"Electronics and Communication Engineering",
+    "Email":"sambhunath.ece@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Atanu Chowdhury",
+    "Title":"Associate Professor",
+    "Department":"Electronics and Communication Engineering",
+    "Email":"atanunita@gmail.com"
+  },
+  {
+    "Name":"Dr. Ashish Kumar Padhan",
+    "Title":"Assistant Professor",
+    "Department":"Electronics and Communication Engineering",
+    "Email":"ashish.ece@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. BIMAN DEBBARMA",
+    "Title":"Assistant Professor",
+    "Department":"Electronics and Communication Engineering",
+    "Email":"biman.ece@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Chittotosh Ganguly",
+    "Title":"Assistant Professor",
+    "Department":"Electronics and Communication Engineering",
+    "Email":"chittotosh.ece@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Goutam Kumar Gupta",
+    "Title":"Assistant Professor",
+    "Department":"Electronics and Communication Engineering",
+    "Email":"goutamece@nita.ac.in"
+  },
+  {
+    "Name":"Dr. Kamalesh Debnath",
+    "Title":"Assistant Professor",
+    "Department":"Electronics and Communication Engineering",
+    "Email":"kamalesh79.nit@gmail.com"
+  },
+  {
+    "Name":"Mr. MANIK BHOWMIK",
+    "Title":"Assistant Professor",
+    "Department":"Electronics and Communication Engineering",
+    "Email":"manik_bh2004@yahoo.co.in"
+  },
+  {
+    "Name":"Dr. Mitra Barun Sarkar",
+    "Title":"Assistant Professor",
+    "Department":"Electronics and Communication Engineering",
+    "Email":"mbarun.ece@nita.ac.in"
+  },
+  {
+    "Name":"Dr. Shikha Maurya",
+    "Title":"Assistant Professor",
+    "Department":"Electronics and Communication Engineering",
+    "Email":"drshikha.ece@nita.ac.in"
+  },
+  {
+    "Name":"Dr. Somnath Roy Choudhury",
+    "Title":"Assistant Professor",
+    "Department":"Electronics and Communication Engineering",
+    "Email":"somnath.ece@nita.ac.in"
+  },
+  {
+    "Name":"Dr. Abhishek Nag",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Electronics and Communication Engineering",
+    "Email":"abhi14379@gmail.com"
+  },
+  {
+    "Name":"Dr. Apangshu Das",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Electronics and Communication Engineering",
+    "Email":"apangshu.ece@gmail.com"
+  },
+  {
+    "Name":"Dr. Priyanka Choudhury",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Electronics and Communication Engineering",
+    "Email":"priyanka.choudhury22@gmail.com"
+  },
+  {
+    "Name":"Dr. Smita Banik",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Electronics and Communication Engineering",
+    "Email":"smitabanik1@gmail.com"
+  },
+  {
+    "Name":"Dr. Jayanta Kumar Rakshit",
+    "Title":"HOD & Associate Professor",
+    "Department":"Electronics and Instrumentation Engineering",
+    "Email":"jayantarakshit.eie@nita.ac.in"
+  },
+  {
+    "Name":"Dr. Debangana Das",
+    "Title":"Assistant Professor",
+    "Department":"Electronics and Instrumentation Engineering",
+    "Email":"debangana.eie@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Debanjan Acharyya",
+    "Title":"Assistant Professor",
+    "Department":"Electronics and Instrumentation Engineering",
+    "Email":"iammdebanjan@gmail.com"
+  },
+  {
+    "Name":"Dr. Krishanu Nath",
+    "Title":"Assistant Professor",
+    "Department":"Electronics and Instrumentation Engineering",
+    "Email":"krishanu.eie@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Rupam Gupta Roy",
+    "Title":"Assistant Professor",
+    "Department":"Electronics and Instrumentation Engineering",
+    "Email":"rupam.eie@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. SUBIR DAS",
+    "Title":"Assistant Professor",
+    "Department":"Electronics and Instrumentation Engineering",
+    "Email":"subir.mcet@gmail.com"
+  },
+  {
+    "Name":"Dr. Yogesh Kumar Sariya",
+    "Title":"Assistant Professor",
+    "Department":"Electronics and Instrumentation Engineering",
+    "Email":"yogesh.sariya1@gmail.com"
+  },
+  {
+    "Name":"Dr. APARUPA KAR",
+    "Title":"Temp. Assistant Professor (Contractual)",
+    "Department":"Electronics and Instrumentation Engineering",
+    "Email":"goldylocks1990@gmail.com"
+  },
+  {
+    "Name":"Dr. PRIYANKA DEY",
+    "Title":"Temp. Assistant Professor (Contractual)",
+    "Department":"Electronics and Instrumentation Engineering",
+    "Email":"priyankadey.mtech@gmail.com"
+  },
+  {
+    "Name":"Mrs. Priyanka Roy Goswami",
+    "Title":"Technical-cum-Teaching Assistant (Contractual)",
+    "Department":"Electronics and Instrumentation Engineering",
+    "Email":"priyankad198219@gmail.com"
+  },
+  {
+    "Name":"Dr. Rajsekhar Panua",
+    "Title":"Professor & HOD",
+    "Department":"Mechanical Engineering",
+    "Email":"rspanua.me@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Prof. Ajoy Kumar Das",
+    "Title":"Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"akdas_72@yahoo.com"
+  },
+  {
+    "Name":"Prof. John Deb Barma",
+    "Title":"Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"debbarma_john@rediffmail.com"
+  },
+  {
+    "Name":"Prof. Prasun Chakraborti",
+    "Title":"Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"prasun.me@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Ranjan Das",
+    "Title":"Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"ranjan.me@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Prof. SWAPAN BHAUMIK",
+    "Title":"Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"drsbhaumik@gmail.com"
+  },
+  {
+    "Name":"Dr. Ajay Biswas",
+    "Title":"Associate Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"ajaybiswas6719@gmail.com"
+  },
+  {
+    "Name":"Dr. Barnik Saha Roy",
+    "Title":"Associate Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"barnik.me@nita.ac.in"
+  },
+  {
+    "Name":"Dr. Jawahar Paulraj",
+    "Title":"Associate Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"dr.p.jawahar@gmail.com"
+  },
+  {
+    "Name":"Dr. Madhujit Deb",
+    "Title":"Associate Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"madhujitme79@gmail.com"
+  },
+  {
+    "Name":"Dr. Manish Bhargava",
+    "Title":"Associate Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"manishbhargava257@gmail.com"
+  },
+  {
+    "Name":"Dr. Pankaj Kumar Das",
+    "Title":"Associate Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"pankaj_642004@yahoo.co.in"
+  },
+  {
+    "Name":"Dr. PRITAM DAS",
+    "Title":"Associate Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"bhargav_2006@yahoo.co.in"
+  },
+  {
+    "Name":"Dr. Subrata Kumar Ghosh",
+    "Title":"Associate Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"subrata.me@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Abhik Majumder",
+    "Title":"Assistant Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"onlyabhik@gmail.com"
+  },
+  {
+    "Name":"Dr. Ankuran Saha",
+    "Title":"Assistant Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"ankuransaha.me@nita.ac.in"
+  },
+  {
+    "Name":"Dr. Arindam Majumder",
+    "Title":"Assistant Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"arindan.me@nita.ac.in"
+  },
+  {
+    "Name":"Dr. Dipak Chandra Das",
+    "Title":"Assistant Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"dchdas12@yahoo.com"
+  },
+  {
+    "Name":"Dr. Paramvir Singh",
+    "Title":"Assistant Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"paramvir.me@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Pinku Debnath",
+    "Title":"Assistant Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"er.pinkunits@yahoo.com"
+  },
+  {
+    "Name":"Dr. R K Bhogendro Meitei",
+    "Title":"Assistant Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"bhogenrk@gmail.com"
+  },
+  {
+    "Name":"Dr. Rahul Banerjee",
+    "Title":"Assistant Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"iamrahul.ju@gmail.com"
+  },
+  {
+    "Name":"Dr. Rajdeep Ghosh",
+    "Title":"Assistant Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"rghosh.me@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Rajdeep Paul",
+    "Title":"Assistant Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"rajdeep.me@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. RAVIVARMAN R",
+    "Title":"Assistant Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"ravivarman.me@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Sagnik Pal",
+    "Title":"Assistant Professor",
+    "Department":"Mechanical Engineering",
+    "Email":"sagnikpal1987@gmail.com"
+  },
+  {
+    "Name":"Mr. Arindam Sinha",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Mechanical Engineering",
+    "Email":"arin.sinha619@gmail.com"
+  },
+  {
+    "Name":"Dr. Ashis Acharjee",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Mechanical Engineering",
+    "Email":"ashisacharjee76@gmail.com"
+  },
+  {
+    "Name":"Dr. DURBADAL DEBROY",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Mechanical Engineering",
+    "Email":"durbadal.me@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Joydeep Roy",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Mechanical Engineering",
+    "Email":"deeproymech@gmail.com"
+  },
+  {
+    "Name":"Mrs. Moutoshi Singha Roy",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Mechanical Engineering",
+    "Email":"singharoymoutoshi1989@gmail.com"
+  },
+  {
+    "Name":"Prof. Rabindra Narayan Mahapatra",
+    "Title":"Professor & HOD",
+    "Department":"Production Engineering",
+    "Email":"rnmahapatra.pe@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Prof. Ram Naresh Rai",
+    "Title":"Professor",
+    "Department":"Production Engineering",
+    "Email":"nareshray@yahoo.co.in"
+  },
+  {
+    "Name":"Dr. Neeraj Sharma",
+    "Title":"Associate Professor",
+    "Department":"Production Engineering",
+    "Email":"neeraj.sharma@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Swarup Paul",
+    "Title":"Associate Professor",
+    "Department":"Production Engineering",
+    "Email":"pswarup2008@gmail.com"
+  },
+  {
+    "Name":"Dr. UTTAM KUMAR MANDAL",
+    "Title":"Associate Professor",
+    "Department":"Production Engineering",
+    "Email":"uttamkumar_mandal@yahoo.co.in"
+  },
+  {
+    "Name":"Dr. VIDYUT DEY",
+    "Title":"Associate Professor",
+    "Department":"Production Engineering",
+    "Email":"vidyutdey@gmail.com"
+  },
+  {
+    "Name":"Dr. Kishan Choudhuri",
+    "Title":"Assistant Professor",
+    "Department":"Production Engineering",
+    "Email":"kishanchoudhuri@gmail.com"
+  },
+  {
+    "Name":"Dr. Nabarun Biswas",
+    "Title":"Assistant Professor",
+    "Department":"Production Engineering",
+    "Email":"nabarun.pe@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Nitish Kumar Mahto",
+    "Title":"Assistant Professor",
+    "Department":"Production Engineering",
+    "Email":"nitish.pe@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Prakash Kumar Sahu",
+    "Title":"Assistant Professor",
+    "Department":"Production Engineering",
+    "Email":"pksahunita@gmail.com"
+  },
+  {
+    "Name":"Dr. Prasenjit Dutta",
+    "Title":"Assistant Professor",
+    "Department":"Production Engineering",
+    "Email":"dutaprasenjit@yahoo.com"
+  },
+  {
+    "Name":"Dr. Sujoy Chakraborty",
+    "Title":"Assistant Professor",
+    "Department":"Production Engineering",
+    "Email":"sujoy.pe@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Uttam Kumar Mohanty",
+    "Title":"Assistant Professor",
+    "Department":"Production Engineering",
+    "Email":"ukmohanty.pe@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Debashis Podder",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Production Engineering",
+    "Email":"debashis5645@gmail.com"
+  },
+  {
+    "Name":"Dr. Gyanabati Khuraijam",
+    "Title":"HOD & Associate Professor",
+    "Department":"MHSS",
+    "Email":"khgyan79@yahoo.com"
+  },
+  {
+    "Name":"Prof. Debasis Neogi",
+    "Title":"Professor",
+    "Department":"MHSS",
+    "Email":"dneogi.mhss@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Anirban Dutta",
+    "Title":"Associate Professor",
+    "Department":"MHSS",
+    "Email":"anirban.mhss@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Nancy Sharma",
+    "Title":"Assistant Professor",
+    "Department":"MHSS",
+    "Email":"nancy.mhss@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Priyadarshi Ranjan",
+    "Title":"Assistant Professor",
+    "Department":"MHSS",
+    "Email":"priyadarshi.mhss@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. RAJIB MALLIK",
+    "Title":"Assistant Professor",
+    "Department":"MHSS",
+    "Email":"mallik.rajib@rediffmail.com"
+  },
+  {
+    "Name":"Dr. AMIT BIKRAM CHOWDHURY",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"MHSS",
+    "Email":"amitphd12@gmail.com"
+  },
+  {
+    "Name":"Dr. Amlanbrata Chakraborty",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"MHSS",
+    "Email":"chakrabortyamlanbrata606@gmail.com"
+  },
+  {
+    "Name":"Dr. Anuradha Nongmaithem",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"MHSS",
+    "Email":"dranuradhanongmaithem@gmail.com"
+  },
+  {
+    "Name":"Dr. KAJU NATH",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"MHSS",
+    "Email":"kajunath.mhss@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. SONIT DUTTA",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"MHSS",
+    "Email":"sonit_dutta@yahoo.co.in"
+  },
+  {
+    "Name":"Mr. BIDYASAGAR DEBNATH",
+    "Title":"Teaching Assistant",
+    "Department":"MHSS",
+    "Email":"bidyasagardebnath@gmail.com"
+  },
+  {
+    "Name":"Mr. NABENDU DEBNATH",
+    "Title":"Teaching Assistant",
+    "Department":"MHSS",
+    "Email":"nabendu.mhss@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Biswajit Saha",
+    "Title":"HOD & Associate Professor",
+    "Department":"Physics",
+    "Email":"biswajit.physics@gmail.com"
+  },
+  {
+    "Name":"Prof. Aparna Nath",
+    "Title":"Professor",
+    "Department":"Physics",
+    "Email":"aparnanath1964@gmail.com"
+  },
+  {
+    "Name":"Dr. Suvra Prakash Mondal",
+    "Title":"Associate Professor",
+    "Department":"Physics",
+    "Email":"suvraphy@gmail.com"
+  },
+  {
+    "Name":"Dr. Vivek Kumar Anand",
+    "Title":"Associate Professor",
+    "Department":"Physics",
+    "Email":"vivek.phy@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Anshuman Mondal",
+    "Title":"Assistant Professor",
+    "Department":"Physics",
+    "Email":"anshuman.phy@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Antu Laha",
+    "Title":"Assistant Professor",
+    "Department":"Physics",
+    "Email":"antulaha.phy@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. MAROJU SUMAN KALYAN",
+    "Title":"Assistant Professor",
+    "Department":"Physics",
+    "Email":"maroju.sk@gmail.com"
+  },
+  {
+    "Name":"Dr. Prosenjit Haldar",
+    "Title":"Assistant Professor",
+    "Department":"Physics",
+    "Email":"prosenjit.phy@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Rahul Debnath",
+    "Title":"Assistant Professor",
+    "Department":"Physics",
+    "Email":"rahul.phy@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Biswajit Paul",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Physics",
+    "Email":"biswajit.thep@gmail.com"
+  },
+  {
+    "Name":"Dr. MANASH KUMAR PAUL",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Physics",
+    "Email":"manashkr@gmail.com"
+  },
+  {
+    "Name":"Dr. Santanu Chakraborty",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Physics",
+    "Email":"santanu.phy@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Saswati Roy",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Physics",
+    "Email":"roysaswati99@gmail.com"
+  },
+  {
+    "Name":"Dr. Thingujam Kiranmala Devi",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Physics",
+    "Email":"kiranmala.thingujam@gmail.com"
+  },
+  {
+    "Name":"Mr. Subharaj Paul",
+    "Title":"Teaching Assistant (Contractual)",
+    "Department":"Physics",
+    "Email":"subharaj.phy@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Mithun Roy",
+    "Title":"HOD & Associate Professor",
+    "Department":"Chemistry",
+    "Email":"mithun.chem@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Prof. Mitali Saha",
+    "Title":"Professor",
+    "Department":"Chemistry",
+    "Email":"mitalisah@gmail.com"
+  },
+  {
+    "Name":"Prof. TARUN KUMAR MISRA",
+    "Title":"Professor",
+    "Department":"Chemistry",
+    "Email":"tkmisra70@yahoo.com"
+  },
+  {
+    "Name":"Dr. SAROJ KUMAR DAS",
+    "Title":"Associate Professor",
+    "Department":"Chemistry",
+    "Email":"sdatnit@gmail.com"
+  },
+  {
+    "Name":"Dr. Abhishek Koner",
+    "Title":"Assistant Professor",
+    "Department":"Chemistry",
+    "Email":"abhishek.chem@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Anannya Saha",
+    "Title":"Assistant Professor",
+    "Department":"Chemistry",
+    "Email":"anannya.chem@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Arindam Modak",
+    "Title":"Assistant Professor",
+    "Department":"Chemistry",
+    "Email":"arindam.chem@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Ratul Paul",
+    "Title":"Assistant Professor",
+    "Department":"Chemistry",
+    "Email":"paulratul.chem@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Sriram Kumar",
+    "Title":"Assistant Professor",
+    "Department":"Chemistry",
+    "Email":"sriram.chem@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. VENKATA BHARAT NISHTALA",
+    "Title":"Assistant Professor",
+    "Department":"Chemistry",
+    "Email":"nvbharatnv@gmail.com"
+  },
+  {
+    "Name":"Dr. Chanchal Bhaumik",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Chemistry",
+    "Email":"bhaumik.chanchal@gmail.com"
+  },
+  {
+    "Name":"Dr. Chitraniva Datta",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Chemistry",
+    "Email":"chitranivadatta@gmail.com"
+  },
+  {
+    "Name":"Dr. Jhinuk De",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Chemistry",
+    "Email":"jhinukde.chemistry@gmail.com"
+  },
+  {
+    "Name":"Dr. Manas Roy",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Chemistry",
+    "Email":"mroyiitk@gmail.com"
+  },
+  {
+    "Name":"Dr. MANOJIT ROY",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Chemistry",
+    "Email":"mroychem@gmail.com"
+  },
+  {
+    "Name":"Dr. Sajal Kundu",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Chemistry",
+    "Email":"kundu12@gmail.com"
+  },
+  {
+    "Name":"Dr. Subhojit Das",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Chemistry",
+    "Email":"subhojit.chem@gmail.com"
+  },
+  {
+    "Name":"Dr. Susanta Ghanta",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Chemistry",
+    "Email":"susanta.ghanta82@gmail.com"
+  },
+  {
+    "Name":"Dr. Uttam Kumar Bera",
+    "Title":"Professor & HOD",
+    "Department":"Mathematics",
+    "Email":"bera_uttam@yahoo.co.in"
+  },
+  {
+    "Name":"Dr. APU KUMAR SAHA",
+    "Title":"Professor",
+    "Department":"Mathematics",
+    "Email":"apusaha_nita@yahoo.co.in"
+  },
+  {
+    "Name":"Dr. Baby Bhattacharya",
+    "Title":"Professor",
+    "Department":"Mathematics",
+    "Email":"babybhatt75@gmail.com"
+  },
+  {
+    "Name":"Prof. DEBASISH BHATTACHARYA",
+    "Title":"Professor",
+    "Department":"Mathematics",
+    "Email":"bhattacharyad_nita2007@yahoo.co.in"
+  },
+  {
+    "Name":"Prof. PARITOSH BHATTACHARYA",
+    "Title":"Professor",
+    "Department":"Mathematics",
+    "Email":"paritosh.math@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Amrita Mandal",
+    "Title":"Assistant Professor",
+    "Department":"Mathematics",
+    "Email":"amrita.math@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Birojit Das",
+    "Title":"Assistant Professor",
+    "Department":"Mathematics",
+    "Email":"dasbirojit@gmail.com"
+  },
+  {
+    "Name":"Dr. Kalyani Debnath",
+    "Title":"Assistant Professor",
+    "Department":"Mathematics",
+    "Email":"mou9900@live.in"
+  },
+  {
+    "Name":"Dr. Krushnachandra Panigrahy",
+    "Title":"Assistant Professor",
+    "Department":"Mathematics",
+    "Email":"kpanigrahy.math@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Pasupathi R",
+    "Title":"Assistant Professor",
+    "Department":"Mathematics",
+    "Email":"pasupathir.math@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Supriyo Dutta",
+    "Title":"Assistant Professor",
+    "Department":"Mathematics",
+    "Email":"supriyo.math@faculty.nita.ac.in"
+  },
+  {
+    "Name":"Dr. Abhijit Baidya",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Mathematics",
+    "Email":"abhijitnita@yahoo.in"
+  },
+  {
+    "Name":"Dr. Jayanta Debnath",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Mathematics",
+    "Email":"mailme_jdebnath@rediffmail.com"
+  },
+  {
+    "Name":"Dr. Jayasree Chakraborty",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Mathematics",
+    "Email":"chakrabortyjayasree1@gmail.com"
+  },
+  {
+    "Name":"Dr. Mantu Das",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Mathematics",
+    "Email":"mantukls86@gmail.com"
+  },
+  {
+    "Name":"Dr. Pinki Majumder",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Mathematics",
+    "Email":"pinki.mjmdr@rediffmail.com"
+  },
+  {
+    "Name":"Dr. Sayanta Chakraborty",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Mathematics",
+    "Email":"sayantasmailbox@rediffmail.com"
+  },
+  {
+    "Name":"Dr. SUDIPA CHOUDHURY",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Mathematics",
+    "Email":"sudipachoudhury032@gmail.com"
+  },
+  {
+    "Name":"Dr. Susmita Roy",
+    "Title":"Assistant Professor (Contractual)",
+    "Department":"Mathematics",
+    "Email":"susmitaroy.nita@gmail.com"
+  }
+]
+;
+
+function titleCase(str){
+    if(!str) return "";
+    return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+}
+
+facultyData.forEach(r=>{
+    r.Name = titleCase(r.Name);
+});
+
+const grid = document.getElementById("grid");
+const searchBox = document.getElementById("searchBox");
+const deptFilter = document.getElementById("deptFilter");
+
+const depts = [...new Set(facultyData.map(x => x.Department))].sort();
+
+depts.forEach(d=>{
+    const op = document.createElement("option");
+    op.value = d;
+    op.textContent = d;
+    deptFilter.appendChild(op);
+});
+
+function render(data){
+    grid.innerHTML = data.map(r=>`
+        <div class="card">
+            <div class="name">${r.Name || ""}</div>
+            <div class="title">${r.Title || ""}</div>
+            <div class="dept">${r.Department || ""}</div>
+            <div class="email">✉ ${r.Email || ""}</div>
+        </div>
+    `).join("");
+}
+
+function filter(){
+
+    const q = searchBox.value.toLowerCase();
+    const dept = deptFilter.value;
+
+    const filtered = facultyData.filter(r=>{
+
+        const text = (
+            (r.Name||"") + " " +
+            (r.Title||"") + " " +
+            (r.Department||"") + " " +
+            (r.Email||"")
+        ).toLowerCase();
+
+        return text.includes(q) &&
+               (dept === "" || r.Department === dept);
+    });
+
+    render(filtered);
+}
+
+searchBox.addEventListener("input", filter);
+deptFilter.addEventListener("change", filter);
+
+render(facultyData);
+
+</script>
+
+</body>
+</html>
