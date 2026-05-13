@@ -99,6 +99,16 @@ input{
     color:#60a5fa;
     word-break:break-all;
 }
+
+.email a{
+    color:#60a5fa;
+    text-decoration:none;
+}
+
+.email a:hover{
+    text-decoration:underline;
+}
+
 </style>
 </head>
 
@@ -116,6 +126,12 @@ input{
     <select id="deptFilter">
         <option value="">All Departments</option>
     </select>
+    <select id="titleFilter">
+      <option value="">All Titles</option>
+      <option value="Professor">Professor</option>
+      <option value="Associate Professor">Associate Professor</option>
+      <option value="Assistant Professor">Assistant Professor</option>
+  </select>
 </div>
 
 <div class="grid" id="grid"></div>
@@ -1574,6 +1590,7 @@ facultyData.forEach(r=>{
 const grid = document.getElementById("grid");
 const searchBox = document.getElementById("searchBox");
 const deptFilter = document.getElementById("deptFilter");
+const titleFilter = document.getElementById("titleFilter");
 
 const depts = [...new Set(facultyData.map(x => x.Department))].sort();
 
@@ -1590,7 +1607,7 @@ function render(data){
             <div class="name">${r.Name || ""}</div>
             <div class="title">${r.Title || ""}</div>
             <div class="dept">${r.Department || ""}</div>
-            <div class="email">✉ ${r.Email || ""}</div>
+            <div class="email">✉ <a href="mailto:${r.Email || ""}">${r.Email || ""}</a></div>
         </div>
     `).join("");
 }
@@ -1599,18 +1616,20 @@ function filter(){
 
     const q = searchBox.value.toLowerCase();
     const dept = deptFilter.value;
+    const title = titleFilter.value;
 
     const filtered = facultyData.filter(r=>{
 
-        const text = (
-            (r.Name||"") + " " +
-            (r.Title||"") + " " +
-            (r.Department||"") + " " +
-            (r.Email||"")
-        ).toLowerCase();
+        const nameMatch =
+            (r.Name || "").toLowerCase().includes(q);
 
-        return text.includes(q) &&
-               (dept === "" || r.Department === dept);
+        const deptMatch =
+            dept === "" || r.Department === dept;
+
+        const titleMatch =
+            title === "" || (r.Title || "").includes(title);
+
+        return nameMatch && deptMatch && titleMatch;
     });
 
     render(filtered);
@@ -1618,6 +1637,7 @@ function filter(){
 
 searchBox.addEventListener("input", filter);
 deptFilter.addEventListener("change", filter);
+titleFilter.addEventListener("change", filter);
 
 render(facultyData);
 
