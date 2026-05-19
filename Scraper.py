@@ -1,12 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+from urllib.parse import urljoin
 import re
-import time
 
-BASE = "https://www.nita.ac.in"
+BASE_URL = "https://www.nita.ac.in/Department/Department_FacultyList.aspx?nDeptID="
 
-DEPT_IDS = {
+departments = {
     "caaqq": "Bio Engineering",
     "caaqs": "Chemical Engineering",
     "caaqm": "Civil Engineering",
@@ -22,60 +22,105 @@ DEPT_IDS = {
     "caasq": "Mathematics"
 }
 
-HEADERS = {"User-Agent": "Mozilla/5.0"}
+headers = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/124.0 Safari/537.36"
+    )
+}
 
-def clean(x):
-    return " ".join(x.replace("\xa0", " ").split())
+all_faculty = []
 
-def scrape_department(dept_id, dept_name):
-    url = f"{BASE}/Department/Department_FacultyList.aspx?nDeptID={dept_id}"
-    r = requests.get(url, headers=HEADERS, timeout=5)
-    r.raise_for_status()
+for dept_id, dept_name in departments.items():
+    url = BASE_URL + dept_id
+    print(f"\nScraping: {dept_name}")
+    print(f"URL: {url}")
 
-    soup = BeautifulSoup(r.text, "lxml")
-    text = soup.get_text("\n", strip=True)
-
-    lines = [clean(x) for x in text.split("\n") if clean(x)]
-
-    rows = []
-    i = 0
-
-    while i < len(lines):
-        line = lines[i]
-
-        if line.lower().startswith(("dr.", "prof.", "mr.", "mrs.", "ms.")):
-            name = line
-            title = lines[i+1] if i+1 < len(lines) else ""
-            dept = lines[i+2] if i+2 < len(lines) else ""
-            email = lines[i+3] if i+3 < len(lines) and "@" in lines[i+3] else ""
-
-            rows.append({
-                "Name": name,
-                "Title": title,
-                "Department": dept_name,
-                "Email": email,
-            })
-
-            i += 4
-        else:
-            i += 1
-
-    return rows
-
-
-all_rows = []
-
-for dept_id, dept_name in DEPT_IDS.items():
     try:
-        print("Scraping:", dept_name)
-        rows = scrape_department(dept_id, dept_name)
-        print("Found:", len(rows))
-        all_rows.extend(rows)
-    except Exception as e:
-        print("Failed:", dept_name, e)
+        response = requests.get(url, headers=headers, timeout=20)
+        response.raise_for_status()
 
-df = pd.DataFrame(all_rows)
-df.to_csv("Nita_Faculty.csv", index=False)
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        faculty_blocks = soup.find_all("div", class_="col-md-4")
+        print(f"Faculty blocks found: {len(faculty_blocks)}")
+        for block in faculty_blocks:
+            image_url = ""
+            img_tag = block.find("img")
+            if img_tag and img_tag.get("src"):
+                src = img_tag["src"].strip()
+                image_url = urljoin(url, src)
+            bad_urls = [
+                "https://www.nita.ac.in/images/x-handle-white.png",
+                "https://www.nita.ac.in/Images/system/noprofile.jpg"
+            ]
+            if image_url in bad_urls:
+                continue
+
+            full_text = block.get_text(" ", strip=True)
+            full_text = re.sub(r"\s+", " ", full_text)
+
+            email_match = re.search(
+                r'[\w\.-]+@[\w\.-]+\.\w+',
+                full_text
+            )
+
+            email = ""
+
+            if email_match:
+                email = email_match.group(0)
+                full_text = full_text.replace(email, "").strip()
+
+            full_text = full_text.replace(dept_name, "").strip()
+
+            designation_patterns = [
+                "HOD & Associate Professor",
+                "Associate Professor",
+                "Assistant Professor \\(Contractual\\)",
+                "Assistant Professor",
+                "Professor"
+            ]
+
+            name = ""
+            title = ""
+
+            for pattern in designation_patterns:
+                match = re.search(pattern, full_text)
+                if match:
+                    title = match.group(0)
+                    name = full_text[:match.start()].strip()
+                    name = name.title()
+
+                    break
+
+            if not title:
+                name = full_text.strip()
+                title = ""
+
+            if (
+                not name
+                or "department" in name.lower()
+            ):
+                continue
+
+            all_faculty.append({
+                "name": name,
+                "title": title,
+                "department": dept_name,
+                "email": email,
+                "photo_url": image_url
+            })
+            print(f"Found: {name}")
+
+    except Exception as e:
+        print(f"Error scraping {dept_name}: {e}")
+
+df = pd.DataFrame(all_faculty)
+df = df.drop_duplicates()
+df = df.reset_index(drop=True)
+df.to_csv("nit_agartala_faculty.csv", index=False)
 df.to_json("Nita_Faculty.json", orient="records", indent=2)
 
-print("Saved", len(df), "faculty rows")
+print("\nCSV saved.")
+print(f"Final faculty count: {len(df)}")
