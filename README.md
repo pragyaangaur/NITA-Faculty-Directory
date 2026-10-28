@@ -2,7 +2,7 @@
 
 An extraction and visualization system for publicly available faculty data from the NIT Agartala website.
 
-The system is split into two layers: a Python-based data extraction pipeline and a static frontend for real-time display which can be seen <a href="https://pragyaangaur.github.io/NITA-Faculty-Directory/">here</a>.
+The system is split into two layers: a Python-based data extraction pipeline and a static frontend for real-time display which can be seen <a href="https://pragyaangaur.dev/NITA-Faculty-Directory/">here</a>.
 
 ---
 
